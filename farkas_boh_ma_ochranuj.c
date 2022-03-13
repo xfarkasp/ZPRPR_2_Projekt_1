@@ -187,10 +187,11 @@ void n(FILE *Subor,char ***NazovPP,char ***MenoPP,char ***TypPP,char ***CasPP,in
 void s(FILE **Subor,char **NazovPP,char **MenoPP,char **TypPP,char **CasPP,int *DatumPP,int PocetZaznamov) {
     int vstupDatum=0;
     char vstupTyp[2];
+    int Zhoda=0;
     scanf("%d %s", &vstupDatum, &vstupTyp);
     if(PocetZaznamov != 0){
             for (int i = 0; i < 6; ++i) {
-                if(vstupDatum==DatumPP[i]||strcasecmp(vstupTyp,TypPP[i])){
+                if(vstupDatum==DatumPP[i]&&strcasecmp(vstupTyp,TypPP[i])){
                     char string[100];
                     memset(string, 0, sizeof(string));
                     int pomoc=0;
@@ -202,10 +203,18 @@ void s(FILE **Subor,char **NazovPP,char **MenoPP,char **TypPP,char **CasPP,int *
                         strcpy(string, MenoPP[i]);
                     }
                     printf("%s %*s %*s\n", CasPP[i], 2+strlen(string),string, 20+(strlen(NazovPP[i])-strlen(string)), NazovPP[i]);
+                    Zhoda++;
             }
         }
+        if(Zhoda==0){
+            printf("Pre dany vstup neexistuju zaznamy\n");
+        }
+    }
+    else{
+       printf("Polia nie su vytvorene\n");
     }
 }
+
 int main() {
 
     char **nazovP = NULL;
