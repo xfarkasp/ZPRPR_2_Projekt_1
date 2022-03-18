@@ -9,19 +9,21 @@ void v(FILE **Subor,char **NazovPP,char **MenoPP,char **TypPP,char **CasPP,int *
     {
         if(PocetZaznamov != 0)
         {
-            for (int i = 0; i < 6; ++i) {
-                printf("NazovP: %s\n", NazovPP[i]);
-                printf("Meno: %s\n",MenoPP[i]);
-                printf("Typ: %s\n", TypPP[i]);
-                printf("Cas:  %s\n", CasPP[i]);
-                printf("datum: %d\n", DatumPP[i]);
+            for (int i = 0; i < PocetZaznamov; ++i) {
+                    printf("pocet zaznamov: %d\n", PocetZaznamov);
+                printf("Nazov prispevku: %s\n", NazovPP[i]);
+                printf("Mena autorov: %s\n",MenoPP[i]);
+                printf("Typ prezentovania: %s\n", TypPP[i]);
+                printf("Cas prezentovania:  %s\n", CasPP[i]);
+                printf("Datum: %d\n", DatumPP[i]);
+                //printf("Mena autorov: %s\n",MenoPP[i]);
                 printf("\n");
             }
-
         }
         else{
-            char ln[1000], NazovP[150], meno[100], typ[2], cas[4], datumStr[8];
+            char ln[1000], NazovP[150], meno[100], typ[50], cas[50], datumStr[8];
             int datum=0;
+            char c;
             while (fgets(ln, 1000, *Subor)){
                  if(ln[0] != '\n'){
                      strcpy(NazovP,ln);
@@ -34,9 +36,7 @@ void v(FILE **Subor,char **NazovPP,char **MenoPP,char **TypPP,char **CasPP,int *
                      fgets(ln, 1000, *Subor);
                      strcpy(datumStr,ln);
                      datum=atoi(datumStr);
-                    if(ln[0] == '\n'){
-                        break;
-                    }
+
                printf("Nazov prispevku: %s", NazovP);
                printf("Mena autorov: %s", meno);
                printf("Typ prezentovania: %s", typ);
@@ -56,7 +56,7 @@ void v(FILE **Subor,char **NazovPP,char **MenoPP,char **TypPP,char **CasPP,int *
         }
         else{
             printf("subor sa otvoril, vypis zo suboru\n");
-            char ln[1000], NazovP[150], meno[100], typ[2], cas[4], datumStr[8];
+            char ln[1000], NazovP[150], meno[100], typ[100], cas[100], datumStr[8];
                     int datum=0;
                     while (fgets(ln, 1000, *Subor)){
                          if(ln[0] != '\n'){
@@ -179,10 +179,7 @@ void n(FILE *Subor,char ***NazovPP,char ***MenoPP,char ***TypPP,char ***CasPP,in
         char c;
         for (int i = 0; i < *PocetZaznamov; ++i) {
             //odstranenie prazdnych riadkov
-            c = getc(Subor);
-            if(c == '\n'){
-                getc(Subor);
-            }
+
             //ziskanie noveho riadku zo suboru do stringu ln
             fgets(ln, sizeof(ln), Subor);
             //odstranenie znaku \n (ukoncovaci znak riadku) a vymena za \0(ukoncovaci znak stringu)
@@ -208,11 +205,16 @@ void n(FILE *Subor,char ***NazovPP,char ***MenoPP,char ***TypPP,char ***CasPP,in
             strcpy((*CasPP)[i],ln);
 
             fscanf(Subor,"%d",&(*DatumPP)[i]);
+
+            c = getc(Subor);
+            if(c == '\n'){
+                getc(Subor);
+            }
         }
         printf("Nacitane data\n");
     }
 }
-void s(FILE **Subor,char **NazovPP,char **MenoPP,char **TypPP,char **CasPP,int *DatumPP,int PocetZaznamov) {
+void s(FILE **Subor,char **NazovPP,char **MenoPP,char **TypPP,char **CasPP,int *DatumPP,int *PocetZaznamov) {
     char vstupTyp[2]=" ";
     int Zhoda=0;
     int sDatum=0;
@@ -246,8 +248,24 @@ void s(FILE **Subor,char **NazovPP,char **MenoPP,char **TypPP,char **CasPP,int *
        printf("Polia nie su vytvorene\n");
     }
 }
-void p(FILE *Subor,char ***NazovPP,char ***MenoPP,char ***TypPP,char ***CasPP,int **DatumPP,int *PocetZaznamov){
-    *DatumPP= realloc(*DatumPP,7 * sizeof(int));
+void p(FILE *Subor,char ***NazovPP,char **MenoPP,char ***TypPP,char ***CasPP,int **DatumPP,int *PocetZaznamov){
+    int string[100];
+    *PocetZaznamov+=1;
+    printf("%d\n", *PocetZaznamov);
+
+    *DatumPP= realloc(*DatumPP ,*PocetZaznamov * sizeof(int));
+
+    MenoPP =(char**)realloc(MenoPP, *PocetZaznamov * sizeof(char*));
+    (MenoPP)[*PocetZaznamov-1] =(char*) malloc(100 * sizeof(char));
+
+    scanf("%d",&(*DatumPP)[*PocetZaznamov-1]);
+    scanf("%s", &string);
+    if(string[strlen(string)-1] == '\n'){
+                string[strlen(string)-1] = '\0';
+            }
+    strcpy((MenoPP)[*PocetZaznamov-1], string);
+    printf("pole stringov realloc: %s\n", (MenoPP)[*PocetZaznamov-1]);
+
 
 }
 void h(char **TypPP,char **CasPP, int PocetZaznamov){
@@ -304,7 +322,118 @@ void h(char **TypPP,char **CasPP, int PocetZaznamov){
        printf("Polia nie su vytvorene\n");
     }
 }
+void o(FILE **Subor,char **NazovPP,char **MenoPP,char **TypPP,char **CasPP,int *DatumPP,int PocetZaznamov){
+    int Zhoda=0;
+    int sDatum=0;
+    int *UPUD=NULL;
+    int *UPUDZoradene=NULL;
+    int *PPPD=NULL;
+    int *PPPDZoradene=NULL;
+    int Upi=0;
+    int Ppi=0;
 
+    UPUD = (int*)malloc(PocetZaznamov * sizeof(int));
+    if(UPUD!=NULL)
+    {
+        printf("pole UPUD alkovane\n");
+    }
+
+    PPPD = (int*)malloc(PocetZaznamov * sizeof(int));
+    if(PPPD!=NULL)
+    {
+        printf("pole PPPD alkovane\n");
+    }
+    scanf("%d", &sDatum);
+
+    UPUDZoradene = (int*)malloc(Upi * sizeof(int));
+        if(UPUDZoradene!=NULL)
+        {
+            printf("pole UPUDZoradene alkovane\n");
+        }
+    PPPDZoradene = (int*)malloc(Ppi * sizeof(int));
+        if(PPPDZoradene!=NULL)
+        {
+            printf("pole PPPDZoradene alkovane\n");
+        }
+
+    if(PocetZaznamov != 0){
+            for (int i = 0; i < PocetZaznamov; ++i) {
+                //printf("vstup typ %s == TypPP %s hodnota porovnania str=%d\n", vstupTyp, TypPP[i], strcmp(vstupTyp,TypPP[i]));
+                if(sDatum==DatumPP[i]){
+                    if(strcasecmp(TypPP[i],"UD")==0||strcasecmp(TypPP[i],"UP")==0){
+                        UPUD[Upi]=atoi(CasPP[i]);
+                        UPUDZoradene[Upi]=i;
+                        Upi++;
+
+                    }
+                    else if(strcasecmp(TypPP[i],"PP")==0||strcasecmp(TypPP[i],"PD")==0){
+                        PPPD[Ppi]=atoi(CasPP[i]);
+                        PPPDZoradene[Ppi]=i;
+                        Ppi++;
+                    }
+                    Zhoda++;
+            }
+        }
+        int zoradenie;
+
+        int temp1=0;
+        int temp2=0;
+        for(int i=0; i<Upi;i++){
+            for(int j=i+1; j<Upi; j++){
+                if(UPUD[i]>UPUD[j]){
+                    temp1=UPUD[i];
+                    UPUD[i]=UPUD[j];
+                    UPUD[j]=temp1;
+
+                    temp2=UPUDZoradene[i];
+                    UPUDZoradene[i]=UPUDZoradene[j];
+                    UPUDZoradene[j]=temp2;
+                }
+            }
+        }
+        temp1=0;
+        temp2=0;
+        for(int i=0; i<Ppi;i++){
+            for(int j=i+1; j<Ppi; j++){
+                if(PPPD[i]>PPPD[j]){
+                    temp1=PPPD[i];
+                    UPUD[i]=PPPD[j];
+                    UPUD[j]=PPPD;
+
+                    temp2=PPPDZoradene[i];
+                    PPPDZoradene[i]=PPPDZoradene[j];
+                    PPPDZoradene[j]=temp2;
+                }
+            }
+             printf("zoradena hodnota %d\n", UPUDZoradene[i]);
+        }
+
+        for(int i=0; i< Upi; i++){
+            int indexik= UPUDZoradene[i];
+            printf("%s  %s  %s  %s\n", CasPP[indexik], TypPP[indexik], MenoPP[indexik], NazovPP[indexik]);
+        }
+        printf("\n");
+        for(int i=0; i< Ppi; i++){
+            int indexik= PPPDZoradene[i];
+            printf("%s  %s  %s  %s\n", CasPP[indexik], TypPP[indexik], MenoPP[indexik], NazovPP[indexik]);
+        }
+
+        free(UPUD);
+        UPUD=NULL;
+        free(PPPD);
+        PPPD=NULL;
+        free(UPUDZoradene);
+        UPUDZoradene=NULL;
+        free(PPPDZoradene);
+        PPPDZoradene=NULL;
+        if(Zhoda==0){
+            printf("Pre dany vstup neexistuju zaznamy\n");
+        }
+    }
+    else{
+       printf("Polia nie su vytvorene\n");
+    }
+}
 int main() {
 
     char **nazovP = NULL;
@@ -334,11 +463,15 @@ int main() {
         }
         else if(volba=='p'){
             printf("Volba p\n");
-            p(&subor,nazovP,meno,typ,cas,datum,pocetzaznamov);
+            p(&subor,nazovP,meno,typ,cas,&datum,&pocetzaznamov);
         }
         else if(volba=='h'){
             printf("Volba h\n");
             h(typ,cas,pocetzaznamov);
+        }
+        else if(volba=='o'){
+            printf("Volba o\n");
+            o(&subor,nazovP,meno,typ,cas,datum,pocetzaznamov);
         }
         else if(volba=='k'){
             printf("Volba k\n");
